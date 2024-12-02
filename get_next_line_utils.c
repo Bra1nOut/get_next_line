@@ -6,7 +6,7 @@
 /*   By: levincen <levincen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:04 by levincen          #+#    #+#             */
-/*   Updated: 2024/11/27 13:23:10 by levincen         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:44:47 by levincen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,58 +22,77 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strchr(const char *str, int c)
+int	ft_strchr(const char *str, int c)
 {
-	size_t	i;
+	int				i;
+	unsigned char	uc;
 
 	i = 0;
+	uc = (unsigned char)c;
+	if (str == NULL)
+		return (0);
 	while (str[i])
 	{
-		if (str[i] == (char)c)
-			return ((char *)&str[i]);
+		if (str[i] == uc)
+			return (1);
 		i++;
 	}
-	if (c == '\0')
-		return ((char *)&str[i]);
-	return (NULL);
+	if (str[i] == uc)
+		return (1);
+	return (0);
 }
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
+char	*search_copy(char *s1)
 {
-	size_t	i;
+	char	*str;
+	int		i;
+	int		j;
 
 	i = 0;
-	if (size == 0)
-		return (ft_strlen(src));
-	while (src[i] && i < (size - 1))
-	{
-		dest[i] = src[i];
+	j = 0;
+	if (!s1)
+		return (NULL);
+	while (s1[i] && s1[i] != '\n')
 		i++;
+	if (s1[i] == '\n')
+		i++;
+	str = malloc(sizeof(char) * (i + 1));
+	if (!str)
+		return (NULL);
+	while (j < i)
+	{
+		str[j] = s1[j];
+		j++;
 	}
-	dest[i] = '\0';
-	return (ft_strlen(src));
+	str[j] = '\0';
+	return (str);
 }
 
-char	*ft_strdup(const char *s)
+char	*rm_start(char *buffer, const char *line)
 {
 	int		i;
-	int		size;
-	char	*new;
+	int		j;
+	size_t	buffer_len;
+	size_t	line_len;
+	char	*cutted_str;
 
-	size = 0;
-	while (s[size])
-		size++;
-	new = malloc(sizeof(char) * (size + 1));
-	if (!new)
-		return (NULL);
 	i = 0;
-	while (s[i])
+	if (!buffer || !line)
+		return (NULL);
+	buffer_len = ft_strlen(buffer);
+	line_len = ft_strlen(line);
+	if (buffer_len <= line_len)
 	{
-		new[i] = s[i];
-		i++;
+		free(buffer);
+		return (NULL);
 	}
-	new[i] = '\0';
-	return (new);
+	cutted_str = malloc(sizeof(char) * (buffer_len - line_len + 1));
+	if (!cutted_str)
+		return (NULL);
+	j = line_len;
+	while (buffer[i])
+		cutted_str[i++] = buffer[j++];
+	return (cutted_str);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)

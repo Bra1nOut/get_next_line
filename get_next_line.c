@@ -6,7 +6,7 @@
 /*   By: levincen <levincen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:23:55 by levincen          #+#    #+#             */
-/*   Updated: 2024/11/27 16:32:31 by levincen         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:43:21 by levincen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,41 +21,61 @@
 // 	return (buffer);
 // }
 
+int	malloc_temp(int fd, char **temp)
+{
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	*temp = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!*temp)
+		return (0);
+	return (1);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*buffer;
-	char	*temp;
-	char	*line;
-	int		bytes_read;
+	char		*temp;
+	char		*line;
+	int			bytes_read;
 
-	if (fd < 0|| BUFFER_SIZE <= 0)
+	if (malloc_temp(fd, &temp) == 0)
 		return (NULL);
-	temp = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!temp)
-		return (NULL);
-	line = ft_strchr(temp, '\n');
-	while (1)
+	while (!ft_strchr(buffer, '\n'))
 	{
-		read(fd, temp, BUFFER_SIZE);
-		if (bytes_read == 0)
+		bytes_read = read(fd, temp, BUFFER_SIZE);
+		if (bytes_read <= 0)
 		{
-			free (temp);
-			line = NULL;
-			break;
+			free(temp);
+			if (bytes_read == 0)
+				break ;
+			return (NULL);
 		}
+		temp[bytes_read] = '\0';
 		buffer = ft_strjoin(buffer, temp);
-		line = ft_strchr(temp, '\n');
 	}
+	if (ft_strchr(buffer, '\n'))
+		free(temp);
+	line = search_copy(buffer);
+	buffer = rm_start(buffer, line);
 	return (line);
 }
 
-int	main()
-{
-	int	fd;
-	char	*buffer;
-
-	buffer  = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	fd = open("text.txt", O_RDONLY);
-	printf("%s\n", get_next_line(fd));
-	return 0;
-}
+// int	main()
+// {
+// 	int	fd = open("text.txt", O_RDONLY);
+// 	if (fd == -1)
+// 	{
+// 		perror("Erreur lors de l'ouverture du fichier");
+// 			return 1;
+// 	}
+// 	char	*line;
+// 	while (1)
+// 	{
+// 		line = get_next_line(fd);
+// 		if (!line)
+// 			break ;
+// 		printf("%s", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// }

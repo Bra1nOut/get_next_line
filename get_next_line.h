@@ -6,7 +6,7 @@
 /*   By: levincen <levincen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 13:24:11 by levincen          #+#    #+#             */
-/*   Updated: 2024/11/27 10:55:09 by levincen         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:41:22 by levincen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
-# define BUFFER_SIZE 42
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 char	*get_next_line(int fd);
-char	*ft_strchr(const char *str, int c);
+int		ft_strchr(const char *str, int c);
 size_t	ft_strlen(const char *str);
-char	*ft_strdup(const char *s);
-size_t	ft_strlcpy(char *dest, const char *src, size_t size);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*search_copy(char *s1);
+char	*rm_start(char *buffer, const char *line);
 
 #endif
